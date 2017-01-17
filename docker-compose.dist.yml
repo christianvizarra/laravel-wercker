@@ -1,0 +1,28 @@
+web:
+    image: christianvizarra/laravel-wercker:php7.0
+    restart: always
+    ports:
+        - "8000:80" # web
+        - "2222:22" # ssh
+        - "35729:35729" # live reload
+        - "9876:9876" # karma server
+    volumes:
+        - ~/.composer:/home/homestead/.composer # composer caching
+        - ~/.gitconfig:/home/homestead/.gitconfig # Git configuration ( access alias && config )
+        - ~/.ssh:/home/homestead/.ssh # Ssh keys for easy deployment inside the container
+        - ~/apps:/apps # all apps
+        - ~/apps/volumes/nginx/sites-available:/etc/nginx/sites-available # nginx sites ( in case you recreate the container )
+        - ~/apps/volumes/nginx/sites-enabled:/etc/nginx/sites-enabled # nginx sites ( in case you recreate the container )
+    links:
+        - mysql
+mysql:
+    image: mysql
+    restart: always
+    ports:
+        - "33060:3306"
+    environment:
+        MYSQL_DATABASE: homestead
+        MYSQL_PASSWORD: secret
+        MYSQL_USER: homestead
+    volumes:
+        - ~/apps/volumes/mysql:/var/lib/mysql # database files
